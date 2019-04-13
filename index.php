@@ -1,9 +1,16 @@
 <?php
 $is_auth = rand(0, 1);
 $user_name = 'Татьяна';
-$categories = ['Доски и лыжи', 'Крепления', 'Ботинки', 'Одежда', 'Инструменты', 'Разное'];
+$categories = [
+    'boards' => 'Доски и лыжи',
+    'attachment' => 'Крепления',
+    'boots' => 'Ботинки',
+    'clothing' => 'Одежда',
+    'tools' => 'Инструменты',
+    'other' => 'Разное',
+];
 
-$ads = [
+$lots = [
     [
         'name' => '2014 Rossignol District Snowboard',
         'category' => $categories[0],
@@ -41,7 +48,18 @@ $ads = [
         'img_URL' => 'img/lot-6.jpg'
     ]
 ];
+
+function get_str_price($price) {
+    if ($price >= 1000) {
+        $result_str = number_format(ceil($price), 0, ',', ' ');
+    }
+    $result_str .= ' ₽';
+    return $result_str;
+}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -94,15 +112,11 @@ $ads = [
         <p class="promo__text">На нашем интернет-аукционе ты найдёшь самое эксклюзивное сноубордическое и горнолыжное снаряжение.</p>
         <ul class="promo__list">
             <!--заполните этот список из массива категорий-->
-            <?php
-            $index = 0;
-            $num = count($categories);
-            while ($index < $num): ?>
-            <li class="promo__item promo__item--boards">
-                <a class="promo__link" href="pages/all-lots.html"><?=$categories[$index];?></a>
+            <?php foreach ($categories as $key => $val): ?>
+            <li class="promo__item promo__item--<?=$key;?>">
+                <a class="promo__link" href="pages/all-lots.html"><?=$val;?></a>
             </li>
-            <?php $index++; ?>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </ul>
     </section>
     <section class="lots">
@@ -111,7 +125,7 @@ $ads = [
         </div>
         <ul class="lots__list">
             <!--заполните этот список из массива с товарами-->
-            <?php foreach ($ads as $key => $val): ?>
+            <?php foreach ($lots as $key => $val): ?>
             <li class="lots__item lot">
                 <div class="lot__image">
                     <img src="<?=$val['img_URL'];?>" width="350" height="260" alt="">
@@ -122,7 +136,7 @@ $ads = [
                     <div class="lot__state">
                         <div class="lot__rate">
                             <span class="lot__amount">Стартовая цена</span>
-                            <span class="lot__cost"><?=$val['price'];?><b class="rub">р</b></span>
+                            <span class="lot__cost"><?=get_str_price($val['price']); ?></span>
                         </div>
                         <div class="lot__timer timer">
                             12:23
@@ -140,15 +154,11 @@ $ads = [
     <nav class="nav">
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
-            <?php
-            $index = 0;
-            $num = count($categories);
-            while ($index < $num): ?>
+            <?php foreach ($categories as $key => $val): ?>
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=$categories[$index];?></a>
+                <a href="pages/all-lots.html"><?=$val;?></a>
             </li>
-            <?php $index++; ?>
-            <?php endwhile; ?>
+            <?php endforeach; ?>
         </ul>
     </nav>
     <div class="main-footer__bottom container">
