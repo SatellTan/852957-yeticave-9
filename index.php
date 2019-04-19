@@ -1,4 +1,6 @@
 <?php
+require_once('functions.php');
+
 $user_name = 'Татьяна';
 $categories = [
     [
@@ -66,16 +68,37 @@ $lots = [
     ]
 ];
 
-require_once('functions.php');
+function esc($str) {
+	$text = htmlspecialchars($str);
+	return $text;
+}
+
+function get_str_price($price) {
+    if ($price >= 1000) {
+        $result_str = number_format(ceil($price), 0, ',', ' ');
+    }
+    return $result_str;
+}
+
+function get_time_count() {
+    $current_date_timestamp = time();
+    $tomorrow_midnight_timestamp = strtotime('tomorrow');
+    $secs_diff = $tomorrow_midnight_timestamp - $current_date_timestamp;
+    $hours = floor($secs_diff / 3600);
+    $minutes = floor(($secs_diff % 3600) / 60);
+    $time_count = [$hours, $minutes];
+
+    return $time_count;
+}
 
 $page_content = include_template('index.php', [
     'categories' => $categories,
     'lots' => $lots,
+    'currency' => 'р'
 ]);
 
-htmlspecialchars($page_content);
-
 $layout_content = include_template('layout.php', [
+    'is_auth' => rand(0, 1),
 	'content' => $page_content,
     'user_name' => $user_name,
     'categories' => $categories,
