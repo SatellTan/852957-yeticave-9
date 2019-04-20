@@ -168,7 +168,7 @@ function get_time_count() {
 function get_timer_finishing() {
     $finish_time_period = get_time_count();
     $finish_time_array = explode(":", $finish_time_period);
-    if ($finish_time_array[0] <1) {
+    if ($finish_time_array[0] < 1) {
         return true;
     }
 
