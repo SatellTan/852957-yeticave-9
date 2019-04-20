@@ -143,4 +143,34 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
+function esc($str) {
+	return htmlspecialchars($str);
+}
 
+function get_str_price($price) {
+    if ($price >= 1000) {
+        $result_str = esc(number_format(ceil($price), 0, ',', ' '));
+    }
+    return $result_str.'<b class="rub">р</b>';
+}
+
+function get_time_count() {
+    $current_date_timestamp = time();
+    $tomorrow_midnight_timestamp = strtotime('tomorrow');
+    $secs_diff = $tomorrow_midnight_timestamp - $current_date_timestamp;
+    $hours = floor($secs_diff / 3600);
+    $minutes = floor(($secs_diff % 3600) / 60);
+    $time_count = $hours.':'.$minutes;
+
+    return $time_count;
+}
+
+function get_timer_finishing() {
+    $finish_time_period = get_time_count();
+    $finish_time_array = explode(":", $finish_time_period);
+    if ($finish_time_array[0] <1) {
+        return true;
+    }
+
+    return false;
+}
