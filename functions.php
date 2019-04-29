@@ -143,10 +143,20 @@ function include_template($name, array $data = []) {
     return $result;
 }
 
+/**
+ * Преобразует специальные символы в HTML сущности
+ * @param string $str HTML-код
+ * @return string Итоговый HTML-код
+ */
 function esc($str) {
 	return htmlspecialchars($str);
 }
 
+/**
+ * Округлет цену и производит разделение пробелами групп цифр по 3 цифры
+ * @param int $price
+ * @return string Итоговый HTML-код
+ */
 function get_str_price($price) {
     if ($price >= 1000) {
         $result_str = esc(number_format(ceil($price), 0, ',', ' '));
@@ -165,6 +175,10 @@ function get_time_count() {
     return $time_count;
 }
 
+/**
+ * Возвращает признак срока финиша лота менее 1 часа
+ * @return boolean
+ */
 function get_timer_finishing() {
     $finish_time_period = get_time_count();
     $finish_time_array = explode(":", $finish_time_period);
@@ -173,4 +187,42 @@ function get_timer_finishing() {
     }
 
     return false;
+}
+
+/**
+ * Получает по заданному sql-запросу sql-записи в виде двумерного массива
+ * @param $link mysqli Ресурс соединения
+ * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param array $data Данные для вставки на место плейсхолдеров
+ *
+ * @return array $result массив полученных sql-записей
+ */
+function db_fetch_data($link, $sql, $data = []) {
+    $result = [];
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    if ($res) {
+    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    }
+
+    return $result;
+}
+
+/**
+ * Создает sql-запись по заданному sql-запросу
+ * @param $link mysqli Ресурс соединения
+ * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param array $data Данные для вставки на место плейсхолдеров
+ *
+ * @return int $result ID, сгенерированный для добавленной sql-записи
+ */
+function db_insert_data($link, $sql, $data = []) {
+    $stmt = db_get_prepare_stmt($link, $sql, $data);
+    $result = mysqli_stmt_execute($stmt);
+    if ($result) {
+    $result = mysqli_insert_id($link);
+    }
+
+    return $result;
 }
