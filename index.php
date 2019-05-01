@@ -8,13 +8,12 @@ $link = mysqli_connect("localhost", "root", "", "yeticave_852957");
 mysqli_set_charset($link, "utf8");
 
 if ($link == false) {
-    print("Ошибка подключения: " . mysqli_connect_error());
+    print("Ведутся технические работы");
 } else {
-    //print("Соединение установлено");
     $sql = "SELECT * FROM categories";
     $categories = db_fetch_data($link, $sql);
 
-    $sql = "SELECT l.name, l.start_price, l.img_URL, coalesce(MAX(b.price), l.start_price) AS price, c.name AS category
+    $sql = "SELECT l.id, l.name, l.start_price, l.img_URL, coalesce(MAX(b.price), l.start_price) AS current_price, l.finish_date, c.name AS category
         FROM lots l
         LEFT JOIN bids b ON b.lot_id = l.id
         INNER JOIN categories c ON l.category_id = c.id
