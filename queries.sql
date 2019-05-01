@@ -19,12 +19,21 @@ VALUES
 INSERT INTO lots
   (creation_date, name, description, img_URL, start_price, finish_date, bid_step, author_id, category_id)
 VALUES
-  (CURRENT_TIMESTAMP - INTERVAL 15 DAY, '2014 Rossignol District Snowboard', '', 'img/lot-1.jpg', 10999, CURRENT_TIMESTAMP + INTERVAL 15 DAY, 500, 1, 1),
-  (CURRENT_TIMESTAMP - INTERVAL 25 DAY, 'DC Ply Mens 2016/2017 Snowboard', '', 'img/lot-2.jpg', 159999, CURRENT_TIMESTAMP + INTERVAL 10 DAY, 3000, 1, 1),
-  (CURRENT_TIMESTAMP - INTERVAL 12 DAY, 'Крепления Union Contact Pro 2015 года размер L/XL', '', 'img/lot-3.jpg', 8000, CURRENT_TIMESTAMP + INTERVAL 12 DAY, 200, 1, 2),
-  (CURRENT_TIMESTAMP - INTERVAL 5 DAY, 'Ботинки для сноуборда DC Mutiny Charocal', '', 'img/lot-4.jpg', 10999, CURRENT_TIMESTAMP + INTERVAL 50 DAY, 200, 2, 3),
-  (CURRENT_TIMESTAMP - INTERVAL 10 DAY, 'Куртка для сноуборда DC Mutiny Charocal', '', 'img/lot-5.jpg', 7500, CURRENT_TIMESTAMP + INTERVAL 25 DAY, 200, 2, 4),
-  (CURRENT_TIMESTAMP - INTERVAL 1 MONTH, 'Маска Oakley Canopy', '', 'img/lot-6.jpg', 5400, CURRENT_TIMESTAMP - INTERVAL 2 DAY, 100, 2, 6);
+  (CURRENT_TIMESTAMP - INTERVAL 15 DAY, '2014 Rossignol District Snowboard', 'Крутой сноуборд', 'img/lot-1.jpg', 10999, CURRENT_TIMESTAMP + INTERVAL 15 DAY, 500, 1, 1),
+  (CURRENT_TIMESTAMP - INTERVAL 25 DAY, 'DC Ply Mens 2016/2017 Snowboard', 'Легкий маневренный сноуборд, готовый дать жару в любом парке, растопив
+            снег
+            мощным щелчкоми четкими дугами. Стекловолокно Bi-Ax, уложенное в двух направлениях, наделяет этот
+            снаряд
+            отличной гибкостью и отзывчивостью, а симметричная геометрия в сочетании с классическим прогибом
+            кэмбер
+            позволит уверенно держать высокие скорости. А если к концу катального дня сил совсем не останется,
+            просто
+            посмотрите на Вашу доску и улыбнитесь, крутая графика от Шона Кливера еще никого не оставляла
+            равнодушным.', 'img/lot-2.jpg', 159999, CURRENT_TIMESTAMP + INTERVAL 10 DAY, 3000, 1, 1),
+  (CURRENT_TIMESTAMP - INTERVAL 12 DAY, 'Крепления Union Contact Pro 2015 года размер L/XL', 'Классические удобные крепления', 'img/lot-3.jpg', 8000, CURRENT_TIMESTAMP + INTERVAL 12 DAY, 200, 1, 2),
+  (CURRENT_TIMESTAMP - INTERVAL 5 DAY, 'Ботинки для сноуборда DC Mutiny Charocal', 'Практически новые ботинки', 'img/lot-4.jpg', 10999, CURRENT_TIMESTAMP + INTERVAL 50 DAY, 200, 2, 3),
+  (CURRENT_TIMESTAMP - INTERVAL 10 DAY, 'Куртка для сноуборда DC Mutiny Charocal', 'Красивая удобная куртка', 'img/lot-5.jpg', 7500, CURRENT_TIMESTAMP + INTERVAL 25 DAY, 200, 2, 4),
+  (CURRENT_TIMESTAMP - INTERVAL 1 MONTH, 'Маска Oakley Canopy', 'Брендовая маска', 'img/lot-6.jpg', 5400, CURRENT_TIMESTAMP - INTERVAL 2 DAY, 100, 2, 6);
 
 
 INSERT INTO bids
