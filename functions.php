@@ -164,6 +164,11 @@ function get_str_price($price) {
     return $result_str;
 }
 
+/**
+ * Возвращает временной период до окончания жизни лота
+ * @param string $finish_date Дата в виде строки
+ * @return string $time_count временной период в виде ЧЧЧЧ:ММ
+ */
 function get_time_count($finish_date) {
     $current_date_timestamp = time();
     $secs_diff = strtotime($finish_date) - $current_date_timestamp;
@@ -176,7 +181,8 @@ function get_time_count($finish_date) {
 
 /**
  * Возвращает признак срока финиша лота менее 1 часа
- * @return boolean
+ * @param string $finish_date Дата в виде строки
+ * @return bool
  */
 function get_timer_finishing($finish_date) {
     $finish_time_period = get_time_count($finish_date);
@@ -202,7 +208,7 @@ function db_fetch_data($link, $sql, $data = []) {
     mysqli_stmt_execute($stmt);
     $res = mysqli_stmt_get_result($stmt);
     if ($res) {
-    $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
+        $result = mysqli_fetch_all($res, MYSQLI_ASSOC);
     }
 
     return $result;
@@ -220,7 +226,7 @@ function db_insert_data($link, $sql, $data = []) {
     $stmt = db_get_prepare_stmt($link, $sql, $data);
     $result = mysqli_stmt_execute($stmt);
     if ($result) {
-    $result = mysqli_insert_id($link);
+        $result = mysqli_insert_id($link);
     }
 
     return $result;
