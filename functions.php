@@ -158,6 +158,7 @@ function esc($str) {
  * @return string Итоговый HTML-код
  */
 function get_str_price($price) {
+    $result_str = $price;
     if ($price >= 1000) {
         $result_str = esc(number_format(ceil($price), 0, ',', ' '));
     }

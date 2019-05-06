@@ -1,8 +1,6 @@
 <?php
 require_once('init.php');
 
-$user_name = 'Татьяна';
-
 $sql = "SELECT l.id, l.name, l.start_price, l.img_URL, coalesce(MAX(b.price), l.start_price) AS current_price, l.finish_date, c.name AS category
     FROM lots l
     LEFT JOIN bids b ON b.lot_id = l.id
