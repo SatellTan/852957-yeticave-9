@@ -17,27 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     //Проверка, выбрана ли категория (передан id категории, являющийся числом)
-    if (!isset($errors['category'])) {
-        if (intval($_POST['category']) === 0) {
-            $errors['category'] = 'Значение категории необходимо выбрать';
-        } else {
-            $sql = "SELECT c.name
-                FROM categories c
-                WHERE c.id = ?
-                GROUP BY c.id";
+    if (!isset($errors['category']) && (intval($_POST['category']) === 0)) {
+        $errors['category'] = 'Значение категории необходимо выбрать';
+    } else {
+        $sql = "SELECT c.name
+            FROM categories c
+            WHERE c.id = ?
+            GROUP BY c.id";
 
-            $category = db_fetch_data($link, $sql, [$_POST['category']]);
+        $category = db_fetch_data($link, $sql, [$_POST['category']]);
 
-            if (!$category) {
-                $errors['category'] = 'Значение категории не найдено в базе данных';
-            }
+        if (!$category) {
+            $errors['category'] = 'Значение категории не найдено в базе данных';
         }
     }
 
-    if (!isset($errors['lot-name'])) {
-        if (strlen($_POST['lot-name']) > $str_max_length) {
-            $errors['lot-name'] = 'Наименование больше допустимой длины в 128 символов';
-        }
+    if (!isset($errors['lot-name']) && (strlen($_POST['lot-name']) > $str_max_length)) {
+        $errors['lot-name'] = 'Наименование больше допустимой длины в 128 символов';
     }
 
     if (!isset($errors['lot-date'])) {
@@ -63,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_FILES['lot-img']['name'])) {
 		$tmp_name = $_FILES['lot-img']['tmp_name'];
         $file_type = mime_content_type($tmp_name);
-		if (($file_type !== "image/jpeg") && ($file_type !== "image/png")) {
+		if (($file_type !== 'image/jpeg') && ($file_type !== 'image/png')) {
 			$errors['file'] = 'Загрузите картинку в формате jpg/jpeg/png';
 		}
 	}
@@ -74,9 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!count($errors)) {
         //файл изображения с новым уникальным именем перенести в публичную директорию и сохранить ссылку
         $tmp_name = $_FILES['lot-img']['tmp_name'];
-        $ext = pathinfo($_FILES['lot-img']['name'], PATHINFO_EXTENSION);
-		$path = 'uploads/' . uniqid() . '.' . $ext;
-        move_uploaded_file($tmp_name, $path);
+        $ext = 'jpg';
+        if ($file_type === 'image/png') {
+            $ext = 'png';
+        }
+
+		$path = '/uploads/' . uniqid() . '.' . $ext;
+        move_uploaded_file($tmp_name, $_SERVER['DOCUMENT_ROOT'] . $path);
         $lot['path'] = $path;
 
         //сохранить новый лот в таблице лотов
@@ -88,7 +88,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $lot_id = db_insert_data($link, $sql, [$lot['lot-name'], $lot['message'], $lot['path'], $lot['lot-rate'], $lot['lot-date'], $lot['lot-step'], $lot['category']]);
 
         //Редирект на страницу с описанием нового лота
-        header("Location: /lot.php?lot_id=".$lot_id);
+        if ($user_id) {
+            header("Location: /lot.php?lot_id=".$lot_id);
+            exit;
+        }
+
+        http_response_code(404);
+        $page_content = renderTemplate('404.php');
+
+        $layout_content = include_template('layout.php', [
+            'is_auth' => rand(0, 1),
+            'content' => $page_content,
+            'user_name' => $user_name,
+            'categories' => $categories,
+            'title' => 'Yeticave - Добавление лота'
+        ]);
+
+        print($layout_content);
         exit;
 	}
 }

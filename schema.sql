@@ -19,7 +19,7 @@ CREATE TABLE users (
   name VARCHAR(64) NOT NULL,
   password VARCHAR(64) NOT NULL,
   avatar_url VARCHAR(128),
-  contacts VARCHAR(128)
+  contacts TEXT
 );
 
 
