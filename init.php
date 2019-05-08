@@ -1,8 +1,11 @@
 <?php
 require_once('functions.php');
 
-$user_name = 'Татьяна';
-$user_id = 1;
+session_start();
+if (isset($_SESSION['user'])) {
+    $user_id = $_SESSION['user']['id'];
+}
+
 $str_max_length = 128;
 
 $link = mysqli_connect("localhost", "root", "", "yeticave_852957");

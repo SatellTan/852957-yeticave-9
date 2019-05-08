@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$required = ['email', 'password', 'name', 'message'];
 
 	foreach ($required as $key) {
-		if (empty(trim($_POST[$key]))) {
+		if (isset($_POST[$key]) && empty(trim($_POST[$key]))) {
             $errors[$key] = 'Это поле необходимо заполнить';
 		} else {
             $user[$key] = trim($_POST[$key]);
@@ -17,16 +17,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!isset($errors['email'])) {
-        $filter_email = filter_var($user['email'], FILTER_VALIDATE_EMAIL);
-        if (!$filter_email) {
-            $errors['email'] = 'Неверный формат e-mail';
+        if (strlen($_POST['email']) > $str_max_length ) {
+            $errors['email'] = 'e-mail больше допустимой длины в 128 символа';
         }
 
+        if (!filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = 'Неверный формат e-mail';
+        }
+    }
+
+    if (!isset($errors['email'])) {
         $sql = "SELECT id FROM users WHERE email = ?";
         $user_id = db_fetch_data($link, $sql, [$_POST['email']]);
         if ($user_id) {
             $errors['email'] = 'Пользователь с таким e-mail уже зарегистрирован';
         }
+    }
+
+    if (!isset($errors['name']) && (strlen($_POST['name']) > ($str_max_length / 2))) {
+        $errors['name'] = 'Имя больше допустимой длины в 64 символа';
+    }
+
+    if (!isset($errors['password']) && (strlen($_POST['password']) > ($str_max_length / 2))) {
+        $errors['password'] = 'Пароль больше допустимой длины в 64 символа';
     }
 
     if (!empty($_FILES['avatar']['name'])) {
@@ -43,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (!empty($_FILES['avatar']['name'])) {
             //файл изображения с новым уникальным именем перенести в публичную директорию и сохранить ссылку
             $tmp_name = $_FILES['avatar']['tmp_name'];
+            $file_type = mime_content_type($tmp_name);
             $ext = 'jpg';
             if ($file_type === 'image/png') {
                 $ext = 'png';
@@ -67,18 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-        http_response_code(404);
-        $page_content = renderTemplate('404.php');
-
-        $layout_content = include_template('layout.php', [
-            'is_auth' => rand(0, 1),
-            'content' => $page_content,
-            'user_name' => $user_name,
-            'categories' => $categories,
-            'title' => 'Yeticave - Регистрация'
-        ]);
-
-        print($layout_content);
+        print('Что-то пошло не так. Попробуйте позднее');
         exit;
 	}
 }
@@ -90,9 +93,7 @@ $page_content = include_template('sign-up.php', [
 ]);
 
 $layout_content = include_template('layout.php', [
-    'is_auth' => rand(0, 1),
     'content' => $page_content,
-    'user_name' => $user_name,
     'categories' => $categories,
     'title' => 'Yeticave - Регистрация'
 ]);

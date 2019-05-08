@@ -1,6 +1,20 @@
 <?php
 require_once('init.php');
 
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    $page_content = include_template('403.php');
+
+    $layout_content = include_template('layout.php', [
+        'content' => $page_content,
+        'categories' => $categories,
+        'title' => 'Yeticave - Добавление лота'
+    ]);
+
+    print($layout_content);
+    exit;
+}
+
 $lot = [];
 $errors = [];
 
@@ -9,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
 	foreach ($required as $key) {
-		if (empty(trim($_POST[$key]))) {
+		if (isset($_POST[$key]) && empty(trim($_POST[$key]))) {
             $errors[$key] = 'Это поле необходимо заполнить';
 		} else {
             $lot[$key] = trim($_POST[$key]);
@@ -93,18 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             exit;
         }
 
-        http_response_code(404);
-        $page_content = renderTemplate('404.php');
-
-        $layout_content = include_template('layout.php', [
-            'is_auth' => rand(0, 1),
-            'content' => $page_content,
-            'user_name' => $user_name,
-            'categories' => $categories,
-            'title' => 'Yeticave - Добавление лота'
-        ]);
-
-        print($layout_content);
+        print('Что-то пошло не так. Попробуйте позднее');
         exit;
 	}
 }
@@ -116,9 +119,7 @@ $page_content = include_template('add.php', [
 ]);
 
 $layout_content = include_template('layout.php', [
-    'is_auth' => rand(0, 1),
     'content' => $page_content,
-    'user_name' => $user_name,
     'categories' => $categories,
     'title' => 'Yeticave - Добавление лота'
 ]);
