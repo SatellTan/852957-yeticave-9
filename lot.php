@@ -7,6 +7,7 @@ if (!isset($_GET['lot_id'])) {
 
     $layout_content = include_template('layout.php', [
         'content' => $page_content,
+        'user' => $user,
         'categories' => $categories,
         'title' => $lot['name']
     ]);
@@ -30,7 +31,8 @@ if ($lot) {
     $lot = $lot[0];
     $page_content = include_template('lot.php', [
         'categories' => $categories,
-        'lot' => $lot
+        'lot' => $lot,
+        'user' => $user
     ]);
 } else {
     http_response_code(404);
@@ -39,6 +41,7 @@ if ($lot) {
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
+    'user' => $user,
     'categories' => $categories,
     'title' => $lot['name']
 ]);

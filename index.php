@@ -18,6 +18,7 @@ $page_content = include_template('index.php', [
 
 $layout_content = include_template('layout.php', [
 	'content' => $page_content,
+    'user' => $user,
     'categories' => $categories,
 	'title' => 'Главная'
 ]);
