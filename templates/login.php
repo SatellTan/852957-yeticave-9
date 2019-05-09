@@ -8,8 +8,11 @@
     </ul>
 </nav>
 
-<form class="form container <?= count($errors)? 'form--invalid' : ''?>" action="login.php" method="post">
+<form class="form container <?= count($errors)? 'form--invalid' : ''?>" action="/login.php" method="post">
     <h2>Вход</h2>
+    <?php if (isset($errors)): ?>
+    <span class="form__error form__error--bottom">Вы ввели неверный email/пароль</span>
+    <?php endif; ?>
     <div class="form__item <?= isset($errors['email']) ? 'form__item--invalid' : '';?>">
         <label for="email">E-mail <sup>*</sup></label>
         <input id="email" type="text" name="email" value="<?= isset($user['email']) ? $user['email'] : '';?>" placeholder="Введите e-mail">

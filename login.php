@@ -25,6 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $sql = "SELECT * FROM users WHERE email = ?";
         $res = db_fetch_data($link, $sql, [$_POST['email']]);
         $user = $res ? $res[0] : null;
+
+        if (!$user) {
+            $errors['email'] = 'Такой пользователь не найден';
+        }
     }
 
     if (!count($errors) && $user) {
@@ -36,10 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         else {
             $errors['password'] = 'Неверный пароль';
         }
-    }
-
-    if (!count($errors) && !$user) {
-        $errors['email'] = 'Такой пользователь не найден';
     }
 }
 
