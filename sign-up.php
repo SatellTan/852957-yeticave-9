@@ -1,6 +1,11 @@
 <?php
 require_once('init.php');
 
+if (isset($_SESSION['user'])) {
+    header("Location: /");
+    exit;
+}
+
 $user = [];
 $errors = [];
 
@@ -17,10 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!isset($errors['email'])) {
-        if (strlen($_POST['email']) > $str_max_length ) {
-            $errors['email'] = 'e-mail больше допустимой длины в 128 символа';
-        }
-
         if (!filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Неверный формат e-mail';
         }
@@ -94,6 +95,7 @@ $page_content = include_template('sign-up.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
+    'user' => $user,
     'categories' => $categories,
     'title' => 'Yeticave - Регистрация'
 ]);

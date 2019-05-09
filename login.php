@@ -1,6 +1,11 @@
 <?php
 require_once('init.php');
 
+if (isset($_SESSION['user'])) {
+    header("Location: /");
+    exit;
+}
+
 $form = [];
 $errors = [];
 
@@ -25,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!count($errors) && $user) {
         if (password_verify($form['password'], $user['password'])) {
             $_SESSION['user'] = $user;
+            header("Location: /");
+            exit;
         }
         else {
             $errors['password'] = 'Неверный пароль';
@@ -32,17 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!count($errors) && !$user) {
-        print $user;
         $errors['email'] = 'Такой пользователь не найден';
     }
-
-    if (!count($errors)) {
-        //Редирект на главную страницу
-        if ($user) {
-            header("Location: /");
-            exit;
-        }
-	}
 }
 
 $page_content = include_template('login.php', [
@@ -53,6 +51,7 @@ $page_content = include_template('login.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
+    'user' => $user,
     'categories' => $categories,
     'title' => 'Yeticave - Вход'
 ]);

@@ -2,9 +2,6 @@
 require_once('functions.php');
 
 session_start();
-if (isset($_SESSION['user'])) {
-    $user_id = $_SESSION['user']['id'];
-}
 
 $str_max_length = 128;
 
@@ -16,5 +13,19 @@ if ($link == false) {
 }
 
 mysqli_set_charset($link, "utf8");
+
+$user = null;
+if (isset($_SESSION['user'])) {
+    $user_id = $_SESSION['user']['id'];
+
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $res = db_fetch_data($link, $sql, [$user_id]);
+    if (!$res) {
+        print('Что-то пошло не так. Попробуйте позднее');
+        exit;
+    }
+    $user = $res[0];
+}
+
 $sql = "SELECT * FROM categories";
 $categories = db_fetch_data($link, $sql);

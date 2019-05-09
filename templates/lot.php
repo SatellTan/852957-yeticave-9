@@ -18,7 +18,7 @@
             <p class="lot-item__description"><?=esc($lot['description']);?></p>
         </div>
         <div class="lot-item__right">
-            <?php if (isset($_SESSION['user'])): ?>
+            <?php if (!empty($user)): ?>
             <div class="lot-item__state">
                 <div class="lot-item__timer timer <?=get_timer_finishing($lot['finish_date']) ? 'timer--finishing': ''?>">
                     <?=get_time_count($lot['finish_date']);?>
