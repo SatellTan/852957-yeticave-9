@@ -232,3 +232,44 @@ function db_insert_data($link, $sql, $data = []) {
 
     return $result;
 }
+
+/**
+ * Устанавливает код ошибки сервера и отображает соответствующий данной ошибке блок
+ * @param int $code  Номер кода ошибки сервера
+ * @param array $categories Перечень всех категорий товаров
+ * @param string $title Заголовок страницы
+ */
+function display_error_code_block ($code, $categories, $title) {
+    http_response_code($code);
+    $page_content = include_template($code . '.php');
+
+    $layout_content = include_template('layout.php', [
+        'content' => $page_content,
+        'user' => $user,
+        'categories' => $categories,
+        'title' => $title
+    ]);
+
+    print($layout_content);
+}
+
+/**
+ * Переводит временной период в человекочитаемый вид (5 минут назад, 2 часа назад, вчера в ..., и т.д.)
+ * @param int $time Временная unix-метка
+ *
+ * @return string Результирующая строка
+ */
+function showDate($time) {
+    $period = time() - $time;
+    if ($period < 60) {
+        return 'меньше минуты назад';
+    } elseif ($period < 3600) {
+        return intval($period/60) . ' ' . get_noun_plural_form($period/60, 'минута', 'минуты', 'минут') . ' назад';
+    } elseif ($period < 86400) {
+        return intval($period/3600) . ' ' . get_noun_plural_form($period/3600, 'час', 'часа', 'часов') . ' назад';
+    } elseif ((($period / 86400) >1) && (($period / 86400) < 2)) {
+        return 'Вчера, в ' . date('H:i', $time);
+    }
+
+    return date('d.m.y', $time) . ' в ' . date('H:i', $time);
+}

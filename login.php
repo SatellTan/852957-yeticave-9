@@ -9,7 +9,7 @@ if (isset($_SESSION['user'])) {
 $form = [];
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$required = ['email', 'password'];
 
@@ -22,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!count($errors)) {
+        $email = trim($_POST['email']);
         $sql = "SELECT * FROM users WHERE email = ?";
-        $res = db_fetch_data($link, $sql, [$_POST['email']]);
+        $res = db_fetch_data($link, $sql, [$email]);
         $user = $res ? $res[0] : null;
 
         if (!$user) {

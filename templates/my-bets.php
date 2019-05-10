@@ -17,7 +17,7 @@
                 <div class="rates__img">
                 <img src="<?= '/'.$val['img_URL'];?>" width="54" height="40" alt="<?=esc($val['name']);?>">
                 </div>
-                <h3 class="rates__title"><a href="/lot.php?lot_id=<?=esc($val['lot_id']);?>"><?=esc($val['name']);?></a></h3>
+                <h3 class="rates__title"><a href="/lot.php?lot_id=<?= $val['lot_id'];?>"><?=esc($val['name']);?></a></h3>
                 <?php if ($val['winner_id'] === $user_id): ?>
                 <p><?=esc($val['contacts']);?></p>
                 <?php endif; ?>
@@ -32,17 +32,21 @@
             <?php endif; ?>
 
             <?php if ($val['winner_id'] === $user_id): ?>
-            <div class="timer timer--win">Ставка выиграла</div>
+            <td class="rates__timer">
+                <div class="timer timer--win">Ставка выиграла</div>
+            </td>
             <?php endif; ?>
             <?php if ((strtotime($val['finish_date']) < time()) && ($val['winner_id'] !== $user_id)): ?>
-            <div class="timer timer--end">Торги окончены</div>
+            <td class="rates__timer">
+                <div class="timer timer--end">Торги окончены</div>
+            </td>
             <?php endif; ?>
 
             <td class="rates__price">
                 <?=esc($val['price']).' р';?>
             </td>
             <td class="rates__time">
-                <?=esc($val['bid_date']);?>
+                <?=showDate(StrToTime($val['bid_date']));?>
             </td>
         </tr>
         <?php endforeach; ?>

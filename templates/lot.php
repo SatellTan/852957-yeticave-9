@@ -45,20 +45,18 @@
                 <?php endif; ?>
             </div>
 
-            <?php if (!empty($user)): ?>
             <div class="history">
                 <h3>История ставок (<span><?= count($bids);?></span>)</h3>
                 <table class="history__list">
                     <?php foreach ($bids as $key => $val): ?>
                     <tr class="history__item">
-                        <td class="history__name"><?=esc($val['name']);?></td>
-                        <td class="history__price"><?=esc($val['price']).' р';?></td>
-                        <td class="history__time"><?= $val['bid_date']; ?></td>
+                        <td class="history__name"><?= esc($val['name']);?></td>
+                        <td class="history__price"><?= esc($val['price']).' р';?></td>
+                        <td class="history__time"><?= showDate(StrToTime($val['bid_date']));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </table>
             </div>
-            <?php endif; ?>
         </div>
         <?php endif; ?>
     </div>

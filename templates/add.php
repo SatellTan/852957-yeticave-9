@@ -22,7 +22,7 @@
             <select id="category" name="category">
                 <option>Выберите категорию</option>
                 <?php foreach ($categories as $key => $val): ?>
-                <option value="<?=$val['id']?>" <?= ($val['id']==$lot['category']) ? 'selected' : '';?>><?=esc($val['name']);?></option>
+                <option value="<?=$val['id']?>" <?= ($val['id']===$lot['category']) ? 'selected' : '';?>><?=esc($val['name']);?></option>
                 <?php endforeach; ?>
             </select>
             <span class="form__error"><?= isset($errors['category']) ? $errors['category'] : 'Выберите категорию';?></span>

@@ -2,17 +2,7 @@
 require_once('init.php');
 
 if (!isset($_GET['lot_id'])) {
-    http_response_code(404);
-    $page_content = include_template('404.php');
-
-    $layout_content = include_template('layout.php', [
-        'content' => $page_content,
-        'user' => $user,
-        'categories' => $categories,
-        'title' => $lot['name']
-    ]);
-
-    print($layout_content);
+    display_error_code_block (404, $categories, 'Лот не найден');
     exit;
 }
 
@@ -20,7 +10,7 @@ $lot = null;
 $errors = [];
 $form = [];
 
-$sql = "SELECT l.id, l.name, l.start_price, l.bid_step, l.description, l.img_URL, coalesce(MAX(b.price), l.start_price) AS current_price, l.finish_date, c.name AS category
+$sql = "SELECT l.*, coalesce(MAX(b.price), l.start_price) AS current_price, c.name AS category
     FROM lots l
     LEFT JOIN bids b ON b.lot_id = l.id
     INNER JOIN categories c ON l.category_id = c.id
@@ -29,35 +19,37 @@ $sql = "SELECT l.id, l.name, l.start_price, l.bid_step, l.description, l.img_URL
 
 $lot = db_fetch_data($link, $sql, [$_GET['lot_id']]);
 if (!$lot) {
-    print('Что-то пошло не так. Попробуйте позднее');
+    display_error_code_block (404, $categories, 'Лот не найден');
     exit;
 }
 $lot = $lot[0];
 
 /* Признак false отображения блока со ставкой, если одно из условий:
     пользователь не авторизован;
-    последняя ставка сделана текущим пользователем;
-    лот создан текущим пользователем.
+    лот создан текущим пользователем;
+    последняя ставка сделана текущим пользователем.
 */
-$display = true;
-if (empty($user)) {
-    $display = false;
-} else {
-    $sql = "SELECT user_id, bid_date FROM bids WHERE lot_id = ? ORDER BY bid_date DESC";
-    $last_bid = db_fetch_data($link, $sql, [$_GET['lot_id']]);
-    if ($last_bid) {
-        $last_bid = $last_bid[0];
-        if ($last_bid['user_id'] === $user_id) {
-            $display = false;
-        }
+$display_form = false;
+if (!empty($user)) {
+    if ($user['id'] !== $lot['author_id']) {
+        $display_form = true;
     }
 
-    if ($user_id === $lot['id']) {
-        $display = false;
+    $sql = "SELECT b.*, u.name
+        FROM bids b
+        LEFT JOIN users u ON b.user_id = u.id
+        WHERE b.lot_id = ?
+        ORDER BY b.bid_date DESC";
+    $sorted_bids = db_fetch_data($link, $sql, [$lot['id']]);
+    if ($sorted_bids) {
+        $last_bid = $sorted_bids[0];
+        if ($last_bid['user_id'] === $user['id']) {
+            $display_form = false;
+        }
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ( $display_form && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
 
     $required = ['cost'];
 	foreach ($required as $key) {
@@ -83,28 +75,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!count($errors)) {
         //добавить новую ставку в таблицу ставок
         $sql = "INSERT INTO bids
-        (bid_date, price, user_id, lot_id)
-        VALUES
-        (CURRENT_TIMESTAMP, ?, $user_id, ?)";
+            (bid_date, price, user_id, lot_id)
+            VALUES
+            (CURRENT_TIMESTAMP, ?, ?, ?)";
 
-        $bid_id = db_insert_data($link, $sql, [$form['cost'], $lot['id']]);
+        $bid_id = db_insert_data($link, $sql, [$form['cost'], $user['id'], $lot['id']]);
         if ($bid_id) {
-            header("Location: /lot.php?lot_id=".$lot['id']);
-            exit;
+            $lot['current_price'] = $form['cost'];
+
+            $new_bid['name'] = $user['name'];
+            $new_bid['price'] = $form['cost'];
+            $new_bid['bid_date'] = date('Y-m-d H:i:s');
+            array_unshift($sorted_bids, $new_bid);
+
+            $display_form = false;
         } else {
             print('Что-то пошло не так. Попробуйте позднее');
             exit;
         }
     }
-}
-$bids = [];
-if (!empty($user)) {
-    $sql = "SELECT b.*, u.name
-    FROM bids b
-    LEFT JOIN users u ON b.user_id = u.id
-    WHERE b.lot_id = ?";
-
-    $bids = db_fetch_data($link, $sql, [$lot['id']]);
 }
 
 $page_content = include_template('lot.php', [
@@ -113,8 +102,8 @@ $page_content = include_template('lot.php', [
     'user' => $user,
     'errors' => $errors,
     'form' => $form,
-    'display' => $display,
-    'bids' => $bids
+    'display' => $display_form,
+    'bids' => $sorted_bids
 ]);
 
 $layout_content = include_template('layout.php', [
