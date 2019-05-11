@@ -13,7 +13,7 @@
 <header class="main-header">
     <div class="main-header__container container">
         <h1 class="visually-hidden">YetiCave</h1>
-        <a class="main-header__logo">
+        <a class="main-header__logo" href="/">
             <img src="/img/logo.svg" width="160" height="39" alt="Логотип компании YetiCave">
         </a>
         <form class="main-header__search" method="get" action="/search.php" autocomplete="off">
@@ -54,7 +54,7 @@
             <!--заполните этот список из массива категорий-->
             <?php foreach ($categories as $key => $val): ?>
             <li class="nav__item">
-                <a href="pages/all-lots.html"><?=$val['name'];?></a>
+                <a href="/lots-by-category.php?category=<?=$val['id'];?>"><?=$val['name'];?></a>
             </li>
             <?php endforeach; ?>
         </ul>
@@ -101,7 +101,7 @@
     </div>
 </footer>
 
-<script src="flatpickr.js"></script>
-<script src="script.js"></script>
+<script src="/flatpickr.js"></script>
+<script src="/script.js"></script>
 </body>
 </html>

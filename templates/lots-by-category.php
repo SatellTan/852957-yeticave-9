@@ -10,11 +10,7 @@
 
 <div class="container">
     <section class="lots">
-        <h2><?=$message;?>
-            <?php if ($search) : ?>
-            «<span><?=$search;?></span>»
-            <?php endif; ?>
-        </h2>
+        <h2>Все лоты в категории <span>«Доски и лыжи»</span></h2>
         <ul class="lots__list">
             <?php foreach ($lots as $key => $val): ?>
             <li class="lots__item lot">

@@ -261,14 +261,16 @@ function display_error_code_block ($code, $categories, $title) {
  */
 function showDate($time) {
     $period = time() - $time;
+
+    if ((((strtotime('tomorrow') - $time) / 86400) >1) && (((strtotime('tomorrow') - $time) / 86400) < 2)) {
+        return 'Вчера, в ' . date('H:i', $time);
+    }
     if ($period < 60) {
         return 'меньше минуты назад';
     } elseif ($period < 3600) {
         return intval($period/60) . ' ' . get_noun_plural_form($period/60, 'минута', 'минуты', 'минут') . ' назад';
     } elseif ($period < 86400) {
         return intval($period/3600) . ' ' . get_noun_plural_form($period/3600, 'час', 'часа', 'часов') . ' назад';
-    } elseif ((($period / 86400) >1) && (($period / 86400) < 2)) {
-        return 'Вчера, в ' . date('H:i', $time);
     }
 
     return date('d.m.y', $time) . ' в ' . date('H:i', $time);

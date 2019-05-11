@@ -14,10 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$required = ['email', 'password'];
 
 	foreach ($required as $key) {
-		if (isset($_POST[$key]) && empty(trim($_POST[$key]))) {
-            $errors[$key] = 'Это поле необходимо заполнить';
-		} else {
-            $form[$key] = trim($_POST[$key]);
+		if (isset($_POST[$key])) {
+            if (empty(trim($_POST[$key]))) {
+                $errors[$key] = 'Это поле необходимо заполнить';
+            } else {
+                $form[$key] = trim($_POST[$key]);
+            }
+        } else {
+            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
         }
     }
 
@@ -32,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (!count($errors) && $user) {
+    if (!count($errors)) {
         if (password_verify($form['password'], $user['password'])) {
             $_SESSION['user'] = $user;
             header("Location: /");

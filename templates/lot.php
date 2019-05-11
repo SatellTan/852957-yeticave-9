@@ -2,7 +2,7 @@
     <ul class="nav__list container">
         <?php foreach ($categories as $key => $val): ?>
         <li class="nav__item">
-            <a href="all-lots.html"><?=esc($val['name']);?></a>
+            <a href="/lots-by-category.php?category=<?=$val['id'];?>"><?=$val['name'];?></a>
         </li>
         <?php endforeach; ?>
     </ul>
@@ -12,17 +12,22 @@
     <div class="lot-item__content">
         <div class="lot-item__left">
             <div class="lot-item__image">
-                <img src="<?=$lot['img_URL'];?>" width="730" height="548" alt="<?=esc($lot['name']);?>">
+                <img src="<?='/'.$lot['img_URL'];?>" width="730" height="548" alt="<?=esc($lot['name']);?>">
             </div>
             <p class="lot-item__category">Категория: <span><?=$lot['category'];?></span></p>
             <p class="lot-item__description"><?=esc($lot['description']);?></p>
         </div>
-        <?php if (strtotime($lot['finish_date']) > time()): ?>
+
         <div class="lot-item__right">
             <div class="lot-item__state">
-                <div class="lot-item__timer timer <?=get_timer_finishing($lot['finish_date']) ? 'timer--finishing': ''?>">
-                    <?=get_time_count($lot['finish_date']);?>
-                </div>
+                <?php if (strtotime($lot['finish_date']) > time()): ?>
+                    <div class="lot-item__timer timer <?=get_timer_finishing($lot['finish_date']) ? 'timer--finishing': ''?>">
+                        <?=get_time_count($lot['finish_date']);?>
+                    </div>
+                <?php else: ?>
+                    <div class="timer timer--end">Торги окончены</div>
+                <?php endif; ?>
+
                 <div class="lot-item__cost-state">
                     <div class="lot-item__rate">
                         <span class="lot-item__amount">Текущая цена</span>
@@ -33,7 +38,7 @@
                     </div>
                 </div>
 
-                <?php if ($display): ?>
+                <?php if (($display) && (strtotime($lot['finish_date']) > time())): ?>
                 <form class="lot-item__form" action="/lot.php?lot_id=<?=$lot['id']?>" method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item <?= isset($errors['cost']) ? 'form__item--invalid' : '';?>">
                         <label for="cost">Ваша ставка</label>
@@ -51,13 +56,12 @@
                     <?php foreach ($bids as $key => $val): ?>
                     <tr class="history__item">
                         <td class="history__name"><?= esc($val['name']);?></td>
-                        <td class="history__price"><?= esc($val['price']).' р';?></td>
+                        <td class="history__price"><?= $val['price'].' р';?></td>
                         <td class="history__time"><?= showDate(StrToTime($val['bid_date']));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </table>
             </div>
         </div>
-        <?php endif; ?>
     </div>
 </section>

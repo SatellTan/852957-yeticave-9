@@ -24,6 +24,13 @@ if (!$lot) {
 }
 $lot = $lot[0];
 
+$sql = "SELECT b.*, u.name
+        FROM bids b
+        LEFT JOIN users u ON b.user_id = u.id
+        WHERE b.lot_id = ?
+        ORDER BY b.bid_date DESC";
+$sorted_bids = db_fetch_data($link, $sql, [$lot['id']]);
+
 /* Признак false отображения блока со ставкой, если одно из условий:
     пользователь не авторизован;
     лот создан текущим пользователем;
@@ -35,12 +42,6 @@ if (!empty($user)) {
         $display_form = true;
     }
 
-    $sql = "SELECT b.*, u.name
-        FROM bids b
-        LEFT JOIN users u ON b.user_id = u.id
-        WHERE b.lot_id = ?
-        ORDER BY b.bid_date DESC";
-    $sorted_bids = db_fetch_data($link, $sql, [$lot['id']]);
     if ($sorted_bids) {
         $last_bid = $sorted_bids[0];
         if ($last_bid['user_id'] === $user['id']) {
@@ -53,10 +54,14 @@ if ( $display_form && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
 
     $required = ['cost'];
 	foreach ($required as $key) {
-		if (isset($_POST[$key]) && empty(trim($_POST[$key]))) {
-            $errors[$key] = 'Это поле необходимо заполнить';
+        if (isset($_POST[$key])) {
+            if (empty(trim($_POST[$key]))) {
+                $errors[$key] = 'Это поле необходимо заполнить';
+            } else {
+                $form[$key] = trim($_POST[$key]);
+            }
         } else {
-            $form[$key] = trim($_POST[$key]);
+            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
         }
     }
 
