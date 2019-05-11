@@ -50,3 +50,6 @@ CREATE TABLE bids (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (lot_id) REFERENCES lots(id)
 );
+
+CREATE FULLTEXT INDEX lots_search
+ON lots (name, description);

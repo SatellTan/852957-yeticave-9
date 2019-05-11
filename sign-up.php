@@ -9,7 +9,7 @@ if (isset($_SESSION['user'])) {
 $user = [];
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$required = ['email', 'password', 'name', 'message'];
 
@@ -70,9 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //Сохранить нового пользователя в БД
         $sql = "INSERT INTO users
-        (registration_date, email, name, password, avatar_url, contacts)
-        VALUES
-        (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
+            (registration_date, email, name, password, avatar_url, contacts)
+            VALUES
+            (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)";
 
         $user_id = db_insert_data($link, $sql, [$user['email'], $user['name'], $password, $user['path'], $user['message']]);
 

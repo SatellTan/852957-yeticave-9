@@ -2,24 +2,14 @@
 require_once('init.php');
 
 if (!isset($_SESSION['user'])) {
-    http_response_code(403);
-    $page_content = include_template('403.php');
-
-    $layout_content = include_template('layout.php', [
-        'content' => $page_content,
-        'user' => $user,
-        'categories' => $categories,
-        'title' => 'Yeticave - Добавление лота'
-    ]);
-
-    print($layout_content);
+    display_error_code_block (403, $categories, 'Yeticave - Добавление лота');
     exit;
 }
 
 $lot = [];
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
@@ -96,14 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         //сохранить новый лот в таблице лотов
         $sql = "INSERT INTO lots
-        (creation_date, name, description, img_URL, start_price, finish_date, bid_step, author_id, category_id)
-        VALUES
-        (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, $user_id, ?)";
+            (creation_date, name, description, img_URL, start_price, finish_date, bid_step, author_id, category_id)
+            VALUES
+            (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $lot_id = db_insert_data($link, $sql, [$lot['lot-name'], $lot['message'], $lot['path'], $lot['lot-rate'], $lot['lot-date'], $lot['lot-step'], $lot['category']]);
+        $lot_id = db_insert_data($link, $sql, [$lot['lot-name'], $lot['message'], $lot['path'], $lot['lot-rate'], $lot['lot-date'], $lot['lot-step'], $user['id'], $lot['category']]);
 
         //Редирект на страницу с описанием нового лота
-        if ($user_id) {
+        if ($lot_id) {
             header("Location: /lot.php?lot_id=".$lot_id);
             exit;
         }
