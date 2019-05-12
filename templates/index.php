@@ -19,7 +19,7 @@
         <?php foreach ($lots as $key => $val): ?>
         <li class="lots__item lot">
             <div class="lot__image">
-                <img src="<?='/'.$val['img_URL'];?>" width="350" height="260" alt="<?=esc($val['name']);?>">
+                <img src="<?=$val['img_URL'];?>" width="350" height="260" alt="<?=esc($val['name']);?>">
             </div>
             <div class="lot__info">
                 <span class="lot__category"><?=$val['category'];?></span>

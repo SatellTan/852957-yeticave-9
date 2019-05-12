@@ -1,5 +1,6 @@
 <?php
 require_once('init.php');
+require_once('getwinner.php');
 
 $sql = "SELECT l.id, l.name, l.start_price, l.img_URL, coalesce(MAX(b.price), l.start_price) AS current_price,
         COUNT(b.price) AS count_bids, l.finish_date, c.name AS category

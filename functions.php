@@ -30,6 +30,7 @@ function is_date_valid(string $date) : bool {
  * @return mysqli_stmt Подготовленное выражение
  */
 function db_get_prepare_stmt($link, $sql, $data = []) {
+
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -262,7 +263,7 @@ function display_error_code_block ($code, $categories, $title) {
 function showDate($time) {
     $period = time() - $time;
 
-    if ((((strtotime('tomorrow') - $time) / 86400) >1) && (((strtotime('tomorrow') - $time) / 86400) < 2)) {
+    if (($time >= strtotime('yesterday')) && ($time < strtotime('today'))) {
         return 'Вчера, в ' . date('H:i', $time);
     }
     if ($period < 60) {

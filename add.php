@@ -11,17 +11,13 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-	$required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
+    $required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
-	foreach ($required as $key) {
-		if (isset($_POST[$key])) {
-            if (empty(trim($_POST[$key]))) {
-                $errors[$key] = 'Это поле необходимо заполнить';
-            } else {
-                $lot[$key] = trim($_POST[$key]);
-            }
+    foreach ($required as $key) {
+        if (isset($_POST[$key]) && !empty(trim($_POST[$key]))) {
+            $lot[$key] = trim($_POST[$key]);
         } else {
-            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
+            $errors[$key] = 'Это поле необходимо заполнить';
         }
     }
 

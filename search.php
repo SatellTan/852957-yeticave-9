@@ -3,14 +3,16 @@ require_once('init.php');
 
 $search = '';
 $lots = [];
+$current_page = 1;
 $pages_count = 0;
+
 
 if (isset($_GET['search']) && trim($_GET['search'])) {
     $search = trim($_GET['search']);
 }
 
 if ($search) {
-    $current_page = $_GET['page'] ?? 1;
+    $current_page = intval($_GET['page']) ?? 1;
 
     //Найти общее количество лотов для пагинации
     $sql = "SELECT COUNT(*) as cnt
@@ -19,6 +21,15 @@ if ($search) {
 
     $items_count = db_fetch_data($link, $sql, [$search])[0]['cnt'];
     $pages_count = ceil($items_count / $page_items);
+
+    //Проверка номера текущей страницы, исправление в случае некорректности номера
+    if ($current_page < 1) {
+        $current_page = 1;
+    }
+    if (($current_page > $pages_count) && $pages_count) {
+        $current_page = $pages_count;
+    }
+
     $offset = ($current_page - 1) * $page_items;
     $pages = range(1, $pages_count);
 
@@ -38,14 +49,9 @@ if ($search) {
     } else {
         $message = 'Ничего не найдено по вашему запросу ';
     }
-
-    if (($current_page > $pages_count) && ($pages_count)) {
-        display_error_code_block (404, $categories, 'Страница не найдена');
-        exit;
-    }
 }
 
-$page_link = '/search.php?search=' . $search . '&find=Найти&page=';
+$page_link = '/search.php?search=' . $search . '&page=';
 
 $pagination = include_template('pagination.php', [
     'pages' => $pages,
