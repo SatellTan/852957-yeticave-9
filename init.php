@@ -4,6 +4,7 @@ require_once('functions.php');
 session_start();
 
 $str_max_length = 128;
+$page_items = 9;
 
 $link = mysqli_connect("localhost", "root", "", "yeticave_852957");
 

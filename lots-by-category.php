@@ -1,43 +1,52 @@
 <?php
 require_once('init.php');
 
-$search = '';
+$category_id = '';
+$category = '';
 $lots = [];
-$pages_count = 0;
+$message = 'Все лоты в категории ';
 
-if (isset($_GET['search']) && trim($_GET['search'])) {
-    $search = trim($_GET['search']);
+if (isset($_GET['category']) && trim($_GET['category'])) {
+    $category_id = trim($_GET['category']);
 }
 
-if ($search) {
+$sql = "SELECT c.name
+        FROM categories c
+        WHERE c.id = ?
+        GROUP BY c.id";
+
+$res = db_fetch_data($link, $sql, [$category_id]);
+
+if (!$res) {
+    display_error_code_block (404, $categories, 'Категория с таким номером не существует');
+    exit;
+}
+
+if ($category_id) {
+    $category = $res[0]['name'];
     $current_page = $_GET['page'] ?? 1;
 
     //Найти общее количество лотов для пагинации
     $sql = "SELECT COUNT(*) as cnt
         FROM lots
-        WHERE MATCH(name, description) AGAINST(?) && finish_date > CURRENT_TIMESTAMP";
+        WHERE category_id = ? && finish_date > CURRENT_TIMESTAMP";
 
-    $items_count = db_fetch_data($link, $sql, [$search])[0]['cnt'];
+    $items_count = db_fetch_data($link, $sql, [$category_id])[0]['cnt'];
     $pages_count = ceil($items_count / $page_items);
     $offset = ($current_page - 1) * $page_items;
     $pages = range(1, $pages_count);
 
     $sql = "SELECT l.id, l.name, l.start_price, l.img_URL, coalesce(MAX(b.price), l.start_price) AS current_price,
-            COUNT(b.price) AS count_bids, l.finish_date, c.name AS category
+            COUNT(b.price) AS count_bids, l.finish_date, c.name AS category, l.category_id
         FROM lots l
         LEFT JOIN bids b ON b.lot_id = l.id
         INNER JOIN categories c ON l.category_id = c.id
-        WHERE MATCH(l.name, l.description) AGAINST(?) && l.finish_date > CURRENT_TIMESTAMP
+        WHERE l.category_id = ? && l.finish_date > CURRENT_TIMESTAMP
         GROUP BY l.id
         ORDER BY l.creation_date DESC
         LIMIT " . $page_items . " OFFSET " . $offset;
 
-    $lots = db_fetch_data($link, $sql, [$search]);
-    if ($lots) {
-        $message = 'Результаты поиска по запросу ';
-    } else {
-        $message = 'Ничего не найдено по вашему запросу ';
-    }
+    $lots = db_fetch_data($link, $sql, [$category_id]);
 
     if (($current_page > $pages_count) && ($pages_count)) {
         display_error_code_block (404, $categories, 'Страница не найдена');
@@ -45,7 +54,7 @@ if ($search) {
     }
 }
 
-$page_link = '/search.php?search=' . $search . '&find=Найти&page=';
+$page_link = '/lots-by-category.php?category=' . $category_id . '&page=';
 
 $pagination = include_template('pagination.php', [
     'pages' => $pages,
@@ -54,11 +63,11 @@ $pagination = include_template('pagination.php', [
     'page_link' => $page_link
 ]);
 
-$page_content = include_template('search.php', [
+$page_content = include_template('lots-by-category.php', [
     'categories' => $categories,
     'lots' => $lots,
-    'search' => $search,
-    'message' => $message,
+    'category_id' => $category_id,
+    'category' => $category,
     'pagination' => $pagination
 ]);
 
