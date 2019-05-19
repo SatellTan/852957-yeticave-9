@@ -11,17 +11,13 @@ $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-	$required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
+    $required = ['lot-name', 'category', 'message', 'lot-rate', 'lot-step', 'lot-date'];
 
-	foreach ($required as $key) {
-		if (isset($_POST[$key])) {
-            if (empty(trim($_POST[$key]))) {
-                $errors[$key] = 'Это поле необходимо заполнить';
-            } else {
-                $lot[$key] = trim($_POST[$key]);
-            }
+    foreach ($required as $key) {
+        if (isset($_POST[$key]) && !empty(trim($_POST[$key]))) {
+            $lot[$key] = trim($_POST[$key]);
         } else {
-            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
+            $errors[$key] = 'Это поле необходимо заполнить';
         }
     }
 
@@ -94,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES
             (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        $lot_id = db_insert_data($link, $sql, [$lot['lot-name'], $lot['message'], $lot['path'], $lot['lot-rate'], $lot['lot-date'], $lot['lot-step'], $user['id'], $lot['category']]);
+        $lot_id = db_insert_data($link, $sql, [$lot['lot-name'], $lot['message'], $lot['path'], intval($lot['lot-rate']), $lot['lot-date'], intval($lot['lot-step']), $user['id'], $lot['category']]);
 
         //Редирект на страницу с описанием нового лота
         if ($lot_id) {
@@ -115,9 +111,8 @@ $page_content = include_template('add.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'user' => $user,
     'categories' => $categories,
-    'title' => 'Yeticave - Добавление лота'
+    'title' => 'Добавление лота - Yeticave'
 ]);
 
 print($layout_content);

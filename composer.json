@@ -1,0 +1,13 @@
+{
+    "name": "tania/yeticave",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Tatyana Kuznetsova",
+            "email": "taniaks2003@yandex.ru"
+        }
+    ],
+    "require": {
+        "swiftmailer/swiftmailer": "^6.2"
+    }
+}

@@ -53,15 +53,12 @@ if (!empty($user)) {
 if ( $display_form && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
 
     $required = ['cost'];
-	foreach ($required as $key) {
-        if (isset($_POST[$key])) {
-            if (empty(trim($_POST[$key]))) {
-                $errors[$key] = 'Это поле необходимо заполнить';
-            } else {
-                $form[$key] = trim($_POST[$key]);
-            }
+
+    foreach ($required as $key) {
+        if (isset($_POST[$key]) && !empty(trim($_POST[$key]))) {
+            $form[$key] = trim($_POST[$key]);
         } else {
-            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
+            $errors[$key] = 'Это поле необходимо заполнить';
         }
     }
 

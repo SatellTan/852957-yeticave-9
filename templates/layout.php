@@ -23,8 +23,7 @@
         <a class="main-header__add-lot button" href="/add.php">Добавить лот</a>
 
         <nav class="user-menu">
-        <!-- здесь должен быть PHP код для показа меню и данных пользователя -->
-        <?php if (!empty($user)): ?>
+        <?php if (isset($_SESSION['user'])): ?>
         <div class="user-menu__logged">
             <p><?=esc($_SESSION['user']['name']);?></p>
             <a class="user-menu__bets" href="/my-bets.php">Мои ставки</a>
@@ -51,7 +50,7 @@
 <footer class="main-footer">
     <nav class="nav">
         <ul class="nav__list container">
-            <!--заполните этот список из массива категорий-->
+            <!--заполнить этот список из массива категорий-->
             <?php foreach ($categories as $key => $val): ?>
             <li class="nav__item">
                 <a href="/lots-by-category.php?category=<?=$val['id'];?>"><?=$val['name'];?></a>

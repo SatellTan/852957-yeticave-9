@@ -13,15 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 	$required = ['email', 'password', 'name', 'message'];
 
-	foreach ($required as $key) {
-		if (isset($_POST[$key])) {
-            if (empty(trim($_POST[$key]))) {
-                $errors[$key] = 'Это поле необходимо заполнить';
-            } else {
-                $user[$key] = trim($_POST[$key]);
-            }
+    foreach ($required as $key) {
+        if (isset($_POST[$key]) && !empty(trim($_POST[$key]))) {
+            $user[$key] = trim($_POST[$key]);
         } else {
-            $errors[$key] = 'Поле ' . $key . ' отсутствует в форме';
+            $errors[$key] = 'Это поле необходимо заполнить';
         }
     }
 

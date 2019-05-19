@@ -5,8 +5,10 @@ $category_id = '';
 $category = '';
 $lots = [];
 $message = 'Все лоты в категории ';
+$current_page = 1;
+$pages_count = 0;
 
-if (isset($_GET['category']) && trim($_GET['category'])) {
+if (isset($_GET['category']) && intval($_GET['category'])) {
     $category_id = trim($_GET['category']);
 }
 
@@ -24,7 +26,7 @@ if (!$res) {
 
 if ($category_id) {
     $category = $res[0]['name'];
-    $current_page = $_GET['page'] ?? 1;
+    $current_page = intval($_GET['page'] ?? 1);
 
     //Найти общее количество лотов для пагинации
     $sql = "SELECT COUNT(*) as cnt
@@ -33,6 +35,15 @@ if ($category_id) {
 
     $items_count = db_fetch_data($link, $sql, [$category_id])[0]['cnt'];
     $pages_count = ceil($items_count / $page_items);
+
+    //Проверка номера текущей страницы, исправление в случае некорректности номера
+    if ($current_page < 1) {
+        $current_page = 1;
+    }
+    if (($current_page > $pages_count) && $pages_count) {
+        $current_page = $pages_count;
+    }
+
     $offset = ($current_page - 1) * $page_items;
     $pages = range(1, $pages_count);
 
@@ -47,11 +58,6 @@ if ($category_id) {
         LIMIT " . $page_items . " OFFSET " . $offset;
 
     $lots = db_fetch_data($link, $sql, [$category_id]);
-
-    if (($current_page > $pages_count) && ($pages_count)) {
-        display_error_code_block (404, $categories, 'Страница не найдена');
-        exit;
-    }
 }
 
 $page_link = '/lots-by-category.php?category=' . $category_id . '&page=';
@@ -73,10 +79,8 @@ $page_content = include_template('lots-by-category.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'user' => $user,
     'categories' => $categories,
-    'title' => $search . ' - Yeticave',
-    'search' => $search
+    'title' => $category . ' - Yeticave'
 ]);
 
 print($layout_content);
