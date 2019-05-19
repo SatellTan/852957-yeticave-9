@@ -12,7 +12,7 @@ if (isset($_GET['search']) && trim($_GET['search'])) {
 }
 
 if ($search) {
-    $current_page = intval($_GET['page']) ?? 1;
+    $current_page = intval($_GET['page'] ?? 1);
 
     //Найти общее количество лотов для пагинации
     $sql = "SELECT COUNT(*) as cnt

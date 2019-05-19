@@ -22,7 +22,7 @@
             <select id="category" name="category">
                 <option>Выберите категорию</option>
                 <?php foreach ($categories as $key => $val): ?>
-                <option value="<?=$val['id']?>" <?= ($val['id']==$lot['category']) ? 'selected' : '';?>><?=esc($val['name']);?></option>
+                <option value="<?=$val['id']?>" <?= (isset($lot['category']) && $val['id']===intval($lot['category'])) ? 'selected' : '';?>><?=esc($val['name']);?></option>
                 <?php endforeach; ?>
             </select>
             <span class="form__error"><?= isset($errors['category']) ? $errors['category'] : 'Выберите категорию';?></span>
@@ -49,13 +49,13 @@
     <div class="form__container-three">
         <div class="form__item form__item--small <?= isset($errors['lot-rate']) ? 'form__item--invalid' : '';?>">
             <label for="lot-rate">Начальная цена <sup>*</sup></label>
-            <input id="lot-rate" type="text" name="lot-rate" value="<?= isset($lot['lot-rate']) ? $lot['lot-rate'] : '';?>" placeholder="0">
+            <input id="lot-rate" type="text" name="lot-rate" value="<?= isset($lot['lot-rate']) ? intval($lot['lot-rate']) : '';?>" placeholder="0">
             <span class="form__error"><?= isset($errors['lot-rate']) ? $errors['lot-rate'] : '';?></span>
         </div>
 
         <div class="form__item form__item--small <?= isset($errors['lot-step']) ? 'form__item--invalid' : '';?>">
             <label for="lot-step">Шаг ставки <sup>*</sup></label>
-            <input id="lot-step" type="text" name="lot-step" value="<?= isset($lot['lot-step']) ? $lot['lot-step'] : '';?>" placeholder="0">
+            <input id="lot-step" type="text" name="lot-step" value="<?= isset($lot['lot-step']) ? intval($lot['lot-step']) : '';?>" placeholder="0">
             <span class="form__error"><?= isset($errors['lot-step']) ? $errors['lot-step'] : '';?></span>
         </div>
 

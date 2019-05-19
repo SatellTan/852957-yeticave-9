@@ -24,9 +24,8 @@ $page_content = include_template('my-bets.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'user' => $user,
     'categories' => $categories,
-    'title' => $lot['name']
+    'title' => 'Мои ставки - Yeticave'
 ]);
 
 print($layout_content);

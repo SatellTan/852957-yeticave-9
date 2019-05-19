@@ -1,10 +1,16 @@
 <?php
 require_once('functions.php');
+require_once('vendor/autoload.php');
 
 session_start();
 
 $str_max_length = 128;
 $page_items = 9;
+$project_link = 'http://852957-yeticave-9';
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
 
 $link = mysqli_connect("localhost", "root", "", "yeticave_852957");
 

@@ -8,7 +8,7 @@
     </li>
 
     <?php foreach ($pages as $page): ?>
-        <li class="pagination-item <?= ($page == $current_page) ? 'pagination-item-active' : '' ?>">
+        <li class="pagination-item <?= (intval($page) === $current_page) ? 'pagination-item-active' : '' ?>">
             <a href="<?=$page_link;?><?=$page;?>"><?=$page;?></a>
         </li>
     <?php endforeach; ?>

@@ -175,8 +175,7 @@ function get_time_count($finish_date) {
     $current_date_timestamp = time();
     $secs_diff = strtotime($finish_date) - $current_date_timestamp;
     $hours = floor($secs_diff / 3600);
-    $minutes = floor(($secs_diff % 3600) / 60);
-    $time_count = $hours.':'.$minutes;
+    $time_count = $hours.':'.date('i', $secs_diff);
 
     return $time_count;
 }
@@ -246,7 +245,6 @@ function display_error_code_block ($code, $categories, $title) {
 
     $layout_content = include_template('layout.php', [
         'content' => $page_content,
-        'user' => $user,
         'categories' => $categories,
         'title' => $title
     ]);
@@ -260,14 +258,14 @@ function display_error_code_block ($code, $categories, $title) {
  *
  * @return string Результирующая строка
  */
-function showDate($time) {
+function show_date($time) {
     $period = time() - $time;
 
     if (($time >= strtotime('yesterday')) && ($time < strtotime('today'))) {
         return 'Вчера, в ' . date('H:i', $time);
     }
     if ($period < 60) {
-        return 'меньше минуты назад';
+        return 'только что';
     } elseif ($period < 3600) {
         return intval($period/60) . ' ' . get_noun_plural_form($period/60, 'минута', 'минуты', 'минут') . ' назад';
     } elseif ($period < 86400) {

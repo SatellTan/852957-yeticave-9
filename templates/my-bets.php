@@ -46,7 +46,7 @@
                 <?=esc($val['price']).' р';?>
             </td>
             <td class="rates__time">
-                <?=showDate(StrToTime($val['bid_date']));?>
+                <?=show_date(StrToTime($val['bid_date']));?>
             </td>
         </tr>
         <?php endforeach; ?>

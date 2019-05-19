@@ -8,7 +8,7 @@ $message = 'Все лоты в категории ';
 $current_page = 1;
 $pages_count = 0;
 
-if (isset($_GET['category']) && trim($_GET['category'])) {
+if (isset($_GET['category']) && intval($_GET['category'])) {
     $category_id = trim($_GET['category']);
 }
 
@@ -26,7 +26,7 @@ if (!$res) {
 
 if ($category_id) {
     $category = $res[0]['name'];
-    $current_page = intval($_GET['page']) ?? 1;
+    $current_page = intval($_GET['page'] ?? 1);
 
     //Найти общее количество лотов для пагинации
     $sql = "SELECT COUNT(*) as cnt
@@ -79,7 +79,6 @@ $page_content = include_template('lots-by-category.php', [
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
-    'user' => $user,
     'categories' => $categories,
     'title' => $category . ' - Yeticave'
 ]);

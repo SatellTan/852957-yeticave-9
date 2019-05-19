@@ -35,6 +35,7 @@ CREATE TABLE lots (
   author_id INT NOT NULL,
   winner_id INT,
   category_id INT NOT NULL,
+  FULLTEXT (name, description),
   FOREIGN KEY (author_id) REFERENCES users(id),
   FOREIGN KEY (winner_id) REFERENCES users(id),
   FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -50,6 +51,3 @@ CREATE TABLE bids (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (lot_id) REFERENCES lots(id)
 );
-
-CREATE FULLTEXT INDEX lots_search
-ON lots (name, description);

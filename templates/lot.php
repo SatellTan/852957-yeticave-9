@@ -42,7 +42,7 @@
                 <form class="lot-item__form" action="/lot.php?lot_id=<?=$lot['id']?>" method="post" autocomplete="off">
                     <p class="lot-item__form-item form__item <?= isset($errors['cost']) ? 'form__item--invalid' : '';?>">
                         <label for="cost">Ваша ставка</label>
-                        <input id="cost" type="text" name="cost" value="<?= isset($form['cost']) ? $form['cost'] : '';?>" placeholder="12 000">
+                        <input id="cost" type="text" name="cost" value="<?= isset($form['cost']) ? $form['cost'] : '';?>" placeholder="<?=get_str_price($lot['current_price'] + $lot['bid_step']);?>">
                         <span class="form__error"><?= isset($errors['cost']) ? $errors['cost'] : 'Введите сумму ставки';?></span>
                     </p>
                     <button type="submit" class="button">Сделать ставку</button>
@@ -57,7 +57,7 @@
                     <tr class="history__item">
                         <td class="history__name"><?= esc($val['name']);?></td>
                         <td class="history__price"><?= $val['price'].' р';?></td>
-                        <td class="history__time"><?= showDate(StrToTime($val['bid_date']));?></td>
+                        <td class="history__time"><?= show_date(StrToTime($val['bid_date']));?></td>
                     </tr>
                     <?php endforeach; ?>
                 </table>
