@@ -6,15 +6,20 @@ session_start();
 
 $str_max_length = 128;
 $page_items = 9;
-$project_link = 'http://852957-yeticave-9';
+$project_link = 'http://';
+$timezone = '+03:00';
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 ini_set('error_reporting', E_ALL);
 
 $link = mysqli_connect("localhost", "root", "", "yeticave_852957");
+if ($link) {
+    $sql = "SET time_zone = '" . $timezone ."'";
+    $set_time_zone = mysqli_query($link, $sql);
+}
 
-if ($link === false) {
+if (!$link || !$set_time_zone) {
     print("Ведутся технические работы");
     exit();
 }

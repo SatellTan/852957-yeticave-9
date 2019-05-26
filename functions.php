@@ -172,10 +172,12 @@ function get_str_price($price) {
  * @return string $time_count временной период в виде ЧЧЧЧ:ММ
  */
 function get_time_count($finish_date) {
-    $current_date_timestamp = time();
-    $secs_diff = strtotime($finish_date) - $current_date_timestamp;
-    $hours = floor($secs_diff / 3600);
-    $time_count = $hours.':'.date('i', $secs_diff);
+    $secs_diff = strtotime($finish_date) - time();
+    $time_count = date('H:i', $secs_diff - date("Z"));
+    $days = intval($secs_diff/(60*60*24));
+    if ($days) {
+        $time_count = $days . ':' . $time_count;
+    }
 
     return $time_count;
 }
@@ -186,9 +188,7 @@ function get_time_count($finish_date) {
  * @return bool
  */
 function get_timer_finishing($finish_date) {
-    $finish_time_period = get_time_count($finish_date);
-    $finish_time_array = explode(":", $finish_time_period);
-    if ($finish_time_array[0] < 1) {
+    if ((strtotime($finish_date) - time()) < 3600) {
         return true;
     }
 
