@@ -82,19 +82,18 @@ if ( $display_form && ($_SERVER['REQUEST_METHOD'] === 'POST')) {
             (CURRENT_TIMESTAMP, ?, ?, ?)";
 
         $bid_id = db_insert_data($link, $sql, [$form['cost'], $user['id'], $lot['id']]);
-        if ($bid_id) {
-            $lot['current_price'] = $form['cost'];
 
-            $new_bid['name'] = $user['name'];
-            $new_bid['price'] = $form['cost'];
-            $new_bid['bid_date'] = date('Y-m-d H:i:s');
-            array_unshift($sorted_bids, $new_bid);
-
-            $display_form = false;
-        } else {
+        if (!$bid_id) {
             print('Что-то пошло не так. Попробуйте позднее');
             exit;
         }
+
+        $lot['current_price'] = $form['cost'];
+        $new_bid['name'] = $user['name'];
+        $new_bid['price'] = $form['cost'];
+        $new_bid['bid_date'] = date('Y-m-d H:i:s');
+        array_unshift($sorted_bids, $new_bid);
+        $display_form = false;
     }
 }
 

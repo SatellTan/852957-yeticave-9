@@ -21,16 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    //Проверка, выбрана ли категория (передан id категории, являющийся числом)
-    if (!isset($errors['category']) && (intval($_POST['category']) === 0)) {
+    //Проверка, выбрана ли категория (передан id категории, являющийся ненулевым значением)
+    if (!isset($_POST['category']) || (intval($_POST['category']) === 0)) {
         $errors['category'] = 'Значение категории необходимо выбрать';
-    } else {
+    }
+
+    if (!isset($errors['category'])) {
         $sql = "SELECT c.name
             FROM categories c
             WHERE c.id = ?
             GROUP BY c.id";
 
-        $category = db_fetch_data($link, $sql, [$_POST['category']]);
+        $category = db_fetch_data($link, $sql, [intval($_POST['category'])]);
 
         if (!$category) {
             $errors['category'] = 'Значение категории не найдено в базе данных';

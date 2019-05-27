@@ -163,6 +163,7 @@ function get_str_price($price) {
     if ($price >= 1000) {
         $result_str = esc(number_format(ceil($price), 0, ',', ' '));
     }
+
     return $result_str;
 }
 
@@ -266,9 +267,11 @@ function show_date($time) {
     }
     if ($period < 60) {
         return 'только что';
-    } elseif ($period < 3600) {
+    }
+    if ($period < 3600) {
         return intval($period/60) . ' ' . get_noun_plural_form($period/60, 'минута', 'минуты', 'минут') . ' назад';
-    } elseif ($period < 86400) {
+    }
+    if ($period < 86400) {
         return intval($period/3600) . ' ' . get_noun_plural_form($period/3600, 'час', 'часа', 'часов') . ' назад';
     }
 

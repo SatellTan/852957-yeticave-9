@@ -38,9 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: /");
             exit;
         }
-        else {
-            $errors['password'] = 'Неверный пароль';
-        }
+
+        $errors['password'] = 'Неверный пароль';
     }
 }
 
